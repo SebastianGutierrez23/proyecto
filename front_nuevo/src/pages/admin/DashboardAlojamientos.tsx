@@ -24,9 +24,9 @@ const DashboardAlojamientos = () => {
     setMostrarFormulario(true);
   };
 
+  // Función para agregar un alojamiento con mejor formato visual en las alertas
   const handleGuardarAlojamiento = async (nuevo: any) => {
     try {
-      // Asegúrate de enviar los tipos y campos correctos
       const alojamiento = {
         nombre: String(nuevo.name || nuevo.nombre || '').trim(),
         estado: String(nuevo.status || nuevo.estado || 'disponible').trim(),
@@ -42,23 +42,23 @@ const DashboardAlojamientos = () => {
         alojamiento.capacidad <= 0 ||
         alojamiento.precio_por_noche <= 0
       ) {
-        alert('Por favor completa todos los campos obligatorios con valores válidos.');
+        window.alert('⚠️ Por favor completa todos los campos obligatorios con valores válidos.');
         return;
       }
+      // Cambia la URL para usar el endpoint correcto
       const res = await fetch('http://127.0.0.1:8000/alojamientos/alojamiento_insert/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(alojamiento)
       });
       if (res.ok) {
-        alert('Alojamiento agregado');
-        // Aquí podrías actualizar la lista de alojamientos si lo necesitas
+        window.alert('✅ Alojamiento agregado correctamente');
       } else {
         const error = await res.json();
-        alert('Error al agregar alojamiento: ' + (error.detail || ''));
+        window.alert('❌ Error al agregar alojamiento: ' + (error.detail || ''));
       }
     } catch (err) {
-      alert('Error al agregar alojamiento');
+      window.alert('❌ Error al agregar alojamiento');
     }
   };
 

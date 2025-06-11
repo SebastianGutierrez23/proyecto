@@ -9,6 +9,15 @@ router = APIRouter(
     tags=["alojamientos"]
 )
 
+@router.get("/all")
+async def get_all_alojamientos():
+    select_query = "SELECT * FROM alojamiento"
+    cursor.execute(select_query)
+    results = cursor.fetchall()
+    columns = [col[0] for col in cursor.description]
+    alojamientos = [dict(zip(columns, row)) for row in results]
+    return alojamientos
+
 @router.get("/")
 async def get_alojamiento(id: int):
     select_query = "SELECT * FROM alojamiento where IdAlojamiento = %s"

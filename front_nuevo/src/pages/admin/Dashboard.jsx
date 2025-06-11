@@ -57,23 +57,33 @@ const Dashboard = () => {
   const [consultarId, setConsultarId] = useState('');
   const [alojamientoConsultado, setAlojamientoConsultado] = useState(null);
   const [mostrarActualizarAlojamiento, setMostrarActualizarAlojamiento] = useState(false);
-  // Elimina los datos fijos y usa un array vacío
   const [spaces, setSpaces] = useState([]);
+  const [spacesLoaded, setSpacesLoaded] = useState(false);
 
-  // Traer los datos de la base de datos al cargar el componente
+  // Traer los datos de la base de datos solo cuando se selecciona la pestaña 'spaces'
   React.useEffect(() => {
-    const fetchSpaces = async () => {
-      try {
-        const res = await fetch('http://127.0.0.1:8000/alojamientos/');
-        if (!res.ok) throw new Error('Error al consultar alojamientos');
-        const data = await res.json();
-        setSpaces(data);
-      } catch (err) {
-        alert('Error al consultar alojamientos');
-      }
-    };
-    fetchSpaces();
-  }, []);
+    if (activeTab === 'spaces' && !spacesLoaded) {
+      const fetchSpaces = async () => {
+        try {
+          const res = await fetch('http://127.0.0.1:8000/alojamientos/all');
+          if (!res.ok) throw new Error('Error al consultar alojamientos');
+          const data = await res.json();
+          setSpaces(data);
+          setSpacesLoaded(true);
+        } catch (err) {
+          alert('Error al consultar alojamientos');
+        }
+      };
+      fetchSpaces();
+    }
+  }, [activeTab, spacesLoaded]);
+
+  // Cuando se cambia de pestaña, si no es 'spaces', resetea el flag para volver a cargar si se regresa
+  React.useEffect(() => {
+    if (activeTab !== 'spaces') {
+      setSpacesLoaded(false);
+    }
+  }, [activeTab]);
 
   // Redirigir si el usuario no es admin
   React.useEffect(() => {
